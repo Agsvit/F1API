@@ -19,7 +19,6 @@ import javax.validation.constraints.NotBlank;
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
     @NotBlank(message = "Name is mandatory")
     private String name;

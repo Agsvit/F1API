@@ -19,7 +19,6 @@ import javax.validation.constraints.NotBlank;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonIgnore
     private Long id;
     @NotBlank(message = "Model is mandatory")
     private String model;
