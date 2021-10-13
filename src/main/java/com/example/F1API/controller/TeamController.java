@@ -1,5 +1,6 @@
 package com.example.F1API.controller;
 
+import com.example.F1API.Request.CreateTeamRequest;
 import com.example.F1API.model.Team;
 import com.example.F1API.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,8 @@ public class TeamController {
     }
 
     @PostMapping(value = "createTeam", consumes = "application/json", produces = "application/json")
-    public Team createTeam(@RequestBody Team team) {
-        Team newTeam = Team.builder().name(team.getName()).principal(team.getPrincipal()).build();
+    public Team createTeam(@RequestBody CreateTeamRequest teamReq) {
+        Team newTeam = Team.builder().name(teamReq.getName()).principal(teamReq.getPrincipal()).build();
         teamService.save(newTeam);
         return newTeam;
     }

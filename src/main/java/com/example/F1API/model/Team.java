@@ -18,9 +18,9 @@ import javax.validation.constraints.NotBlank;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    Long id;
     @NotBlank(message = "Name is mandatory")
-    private String name;
+    String name;
     @NotBlank(message = "Principal is mandatory")
-    private String principal;
+    String principal;
 }

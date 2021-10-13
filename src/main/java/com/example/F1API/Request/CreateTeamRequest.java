@@ -17,5 +17,5 @@ public class CreateTeamRequest {
     private String name;
     @NotBlank(message = "Principal is mandatory")
     private String principal;
-//    private Long carId;
+
 }

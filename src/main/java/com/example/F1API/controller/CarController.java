@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,16 +30,16 @@ public class CarController {
         return carService.findById(carId);
     }
 
-    @PostMapping(value = "create-car", consumes = "application/json", produces = "application/json")
-    public Car createCar(@RequestBody CreateCarRequest carReq) {
+    @PostMapping(value = "create-car", consumes = "application/json")
+    public ResponseEntity<Car> createCar(@RequestBody @Valid CreateCarRequest carReq) {
         Car newCar = Car
                 .builder()
                 .model(carReq.getModel())
                 .color1(carReq.getColor1())
                 .color2(carReq.getColor2())
                 .build();
-        return carService.save(newCar, carReq.getTeamId());
-
+        carService.save(newCar, carReq.getTeamId());
+        return ResponseEntity.ok(newCar);
     }
 
     @PutMapping(value = "updateCar/{id}", consumes = "application/json", produces = "application/json")

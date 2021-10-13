@@ -13,8 +13,13 @@ import java.util.Optional;
 @Service
 public class CarService {
 
-    @Autowired
-    CarRepository carRepository;
+    //    @Autowired
+    final CarRepository carRepository;
+
+    public CarService(CarRepository carRepository) {
+        this.carRepository = carRepository;
+    }
+
     @Autowired
     TeamRepository teamRepository;
 
@@ -26,11 +31,11 @@ public class CarService {
         return carRepository.findById(carId);
     }
 
-    public Car save(Car newCar, Long teamId) {
+    public void save(Car newCar, Long teamId) {
 //    public <S extends Car> S save(S newCar, Long teamId) {
         Team team = teamRepository.getById(teamId);
         newCar.setTeam(team);
-        return carRepository.save(newCar);
+        carRepository.save(newCar);
     }
 
     public void deleteById(Long id) {
