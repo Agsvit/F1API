@@ -17,5 +17,5 @@ public class CreateDriverRequest {
     private String name;
     @NotBlank(message = "Age should be between 1 and 99")
     private int age;
-//    private Long carId;
+    private Long carId;
 }

@@ -29,24 +29,27 @@ public class CarController {
         return carService.findById(carId);
     }
 
-    @PostMapping(value = "createCar", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "create-car", consumes = "application/json", produces = "application/json")
     public Car createCar(@RequestBody CreateCarRequest carReq) {
-        Car newCar =
-                Car.builder().model(carReq.getModel()).color1(carReq.getColor1())
-                .color2(carReq.getColor2()).build();
-        carService.save(newCar);
-        return newCar;
+        Car newCar = Car
+                .builder()
+                .model(carReq.getModel())
+                .color1(carReq.getColor1())
+                .color2(carReq.getColor2())
+                .build();
+        return carService.save(newCar, carReq.getTeamId());
+
     }
 
     @PutMapping(value = "updateCar/{id}", consumes = "application/json", produces = "application/json")
-    public Car updateCountry(Long id, @RequestBody Car car) {
+    public Car updateCountry(Long id, @RequestBody CreateCarRequest carReq) {
         System.out.println(id);
         Optional<Car> carToUpdate = carService.findById(id);
         if (carToUpdate.isPresent()) {
-            carToUpdate.get().setModel(car.getModel());
-            carToUpdate.get().setColor1(car.getColor1());
-            carToUpdate.get().setColor2(car.getColor2());
-            carService.save(carToUpdate.get());
+            carToUpdate.get().setModel(carReq.getModel());
+            carToUpdate.get().setColor1(carReq.getColor1());
+            carToUpdate.get().setColor2(carReq.getColor2());
+            carService.save(carToUpdate.get(), carReq.getTeamId());
             return carToUpdate.get();
         } else {
             ResponseEntity.badRequest().body("Car not found");
