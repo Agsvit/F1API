@@ -1,15 +1,15 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.Request.CreateTeamRequest;
+import com.example.F1API.request.create.CreateTeamRequest;
+import com.example.F1API.request.response.ResponseTeamRequest;
 import com.example.F1API.model.Team;
 import com.example.F1API.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -19,36 +19,53 @@ public class TeamController {
     @Autowired
     TeamService teamService;
 
-    @GetMapping("/getTeams")
-    public List<Team> getTeams() {
-        return teamService.findAll();
+    @GetMapping("/teams")
+    public List<ResponseTeamRequest> getTeams() {
+
+        List<ResponseTeamRequest> responseTeamReq = new ArrayList<>();
+        List<Team> teams = teamService.findAll();
+        for (Team team : teams) {
+            responseTeamReq.add(new ResponseTeamRequest(
+                    team.getId(),
+                    team.getName(),
+                    team.getPrincipal()));
+        }
+        return responseTeamReq;
     }
 
-    @GetMapping("/getTeamsId")
-    public Optional<Team> getTeamId(Long teamId) {
-        return teamService.findById(teamId);
+    @GetMapping("/teams/{id}")
+    public ResponseTeamRequest getTeamId(Long teamId) {
+        Team team = teamService.findById(teamId);
+        ResponseTeamRequest teamRequest = new ResponseTeamRequest(
+                team.getId(),
+                team.getName(),
+                team.getPrincipal());
+        return teamRequest;
     }
 
     @PostMapping(value = "createTeam", consumes = "application/json", produces = "application/json")
-    public Team createTeam(@RequestBody CreateTeamRequest teamReq) {
-        Team newTeam = Team.builder().name(teamReq.getName()).principal(teamReq.getPrincipal()).build();
+    public ResponseTeamRequest createTeam(@RequestBody CreateTeamRequest teamReq) {
+        Team newTeam = Team.builder()
+                .name(teamReq.getName())
+                .principal(teamReq.getPrincipal())
+                .build();
         teamService.save(newTeam);
-        return newTeam;
+        ResponseTeamRequest teamRequest = new ResponseTeamRequest();
+        teamRequest.setId(newTeam.getId());
+        teamRequest.setName(newTeam.getName());
+        teamRequest.setPrincipal(newTeam.getPrincipal());
+        return teamRequest;
     }
 
     @PutMapping(value = "updateTeam/{id}", consumes = "application/json", produces = "application/json")
-    public Team updateCountry(Long id, @RequestBody Team team) {
-        System.out.println(id);
-        Optional<Team> teamToUpdate = teamService.findById(id);
-        if (teamToUpdate.isPresent()) {
-            teamToUpdate.get().setName(team.getName());
-            teamToUpdate.get().setPrincipal(team.getPrincipal());
-            teamService.save(teamToUpdate.get());
-            return teamToUpdate.get();
-        } else {
-            ResponseEntity.badRequest().body("Team not found");
-            return null;
-        }
+    public ResponseTeamRequest updateTeam(Long id, @RequestBody CreateTeamRequest teamReq) {
+        Team team = teamService.update(teamReq, id);
+        ResponseTeamRequest teamRespReq = new ResponseTeamRequest(
+                team.getId(),
+                team.getName(),
+                team.getPrincipal());
+        return teamRespReq;
+
     }
 
     @DeleteMapping(value = "/deleteTeam/{id}")

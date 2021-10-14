@@ -1,26 +1,25 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.Request.CreateDriverRequest;
-import com.example.F1API.Request.ResponseDriverRequest;
+import com.example.F1API.request.create.CreateDriverRequest;
+import com.example.F1API.request.response.ResponseDriverRequest;
 import com.example.F1API.model.Driver;
 import com.example.F1API.service.DriverService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 @Validated
 public class DriverController {
 
-    @Autowired
-    DriverService driverService;
+    private final DriverService driverService;
+
+    public DriverController(DriverService driverService) {
+        this.driverService = driverService;
+    }
 
     @GetMapping("/drivers")
     public List<ResponseDriverRequest> getDrivers() {
@@ -29,6 +28,7 @@ public class DriverController {
         List<Driver> drivers = driverService.findAll();
         for (Driver driver : drivers) {
             responseDriverReq.add(new ResponseDriverRequest(
+                    driver.getId(),
                     driver.getName(),
                     driver.getAge(),
                     driver.getTeam().getId(),
@@ -37,13 +37,20 @@ public class DriverController {
         return responseDriverReq;
     }
 
-    @GetMapping("/getDriversId")
-    public Optional<Driver> getDriverId(Long driverId) {
+    @GetMapping("/drivers/{id}")
+    public ResponseDriverRequest getDriverId(Long driverId) {
+        Driver driver = driverService.findById(driverId);
+        ResponseDriverRequest driverRequest = new ResponseDriverRequest(
+                driver.getId(),
+                driver.getName(),
+                driver.getAge(),
+                driver.getTeam().getId(),
+                driver.getTeam().getName());
 
-        return driverService.findById(driverId);
+        return driverRequest;
     }
 
-    @PostMapping(value = "drivers", consumes = "application/json")
+    @PostMapping(value = "/drivers", consumes = "application/json")
     public ResponseDriverRequest createDriver(@RequestBody CreateDriverRequest driverReq) {
         Driver newDriver = Driver
                 .builder()
@@ -52,6 +59,7 @@ public class DriverController {
                 .build();
         driverService.save(newDriver, driverReq.getTeamId());
         ResponseDriverRequest driverRequest = new ResponseDriverRequest();
+        driverRequest.setId(newDriver.getId());
         driverRequest.setName(newDriver.getName());
         driverRequest.setAge(newDriver.getAge());
         driverRequest.setTeamId(newDriver.getTeam().getId());
@@ -59,22 +67,19 @@ public class DriverController {
         return driverRequest;
     }
 
-    @PutMapping(value = "updateDriver/{id}", consumes = "application/json", produces = "application/json")
-    public Driver updateCountry(Long id, @RequestBody Driver driver) {
-        System.out.println(id);
-        Optional<Driver> driverToUpdate = driverService.findById(id);
-        if (driverToUpdate.isPresent()) {
-            driverToUpdate.get().setName(driver.getName());
-            driverToUpdate.get().setAge(driver.getAge());
-            driverService.save(driverToUpdate.get());
-            return driverToUpdate.get();
-        } else {
-            ResponseEntity.badRequest().body("Driver not found");
-            return null;
-        }
+    @PutMapping(value = "/drivers/{id}")
+    public ResponseDriverRequest updateDriver(@PathVariable(value = "id") Long id, @RequestBody CreateDriverRequest driverReq) {
+        Driver driver = driverService.update(driverReq, id);
+        ResponseDriverRequest driverRespReq = new ResponseDriverRequest(
+                driver.getId(),
+                driver.getName(),
+                driver.getAge(),
+                driver.getTeam().getId(),
+                driver.getTeam().getName());
+        return driverRespReq;
     }
 
-    @DeleteMapping(value = "/deleteDriver/{id}")
+    @DeleteMapping(value = "/drivers/{id}")
     public void deleteDriver(Long id) {
         driverService.deleteById(id);
     }

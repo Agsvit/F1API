@@ -1,6 +1,6 @@
 package com.example.F1API.service;
 
-import com.example.F1API.Request.CreateDriverRequest;
+import com.example.F1API.request.create.CreateDriverRequest;
 import com.example.F1API.model.Driver;
 import com.example.F1API.model.Team;
 import com.example.F1API.repository.DriverRepository;
@@ -25,8 +25,12 @@ public class DriverService {
         return driverRepository.findAll();
     }
 
-    public Optional<Driver> findById(Long driverId) {
-        return driverRepository.findById(driverId);
+    public Driver findById(Long driverId) {
+        Optional<Driver> driver = driverRepository.findById(driverId);
+        if (driver.isPresent()) {
+            return driver.get();
+        }
+        return null;
     }
 
     public Driver save(Driver newDriver, Long teamId) {
@@ -47,4 +51,15 @@ public class DriverService {
         driverRepository.deleteById(id);
     }
 
+    public Driver update(CreateDriverRequest driverReq, Long id) {
+        Optional<Driver> driverOptional = driverRepository.findById(id);
+        if (driverOptional.isPresent()) {
+            driverOptional.get().setName(driverReq.getName());
+            driverOptional.get().setAge(driverReq.getAge());
+
+            return driverRepository.save(driverOptional.get());
+        }
+        //Exception
+        return null;
+    }
 }

@@ -1,28 +1,26 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.Request.CreateCarRequest;
-import com.example.F1API.Request.ResponseCarRequest;
-import com.example.F1API.Request.ResponseDriverRequest;
+import com.example.F1API.request.create.CreateCarRequest;
+import com.example.F1API.request.response.ResponseCarRequest;
 import com.example.F1API.model.Car;
-import com.example.F1API.model.Driver;
 import com.example.F1API.service.CarService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 @Validated
 public class CarController {
 
-    @Autowired
-    CarService carService;
+   private final CarService carService;
+
+    public CarController(CarService carService) {
+        this.carService = carService;
+    }
 
     @GetMapping("/cars")
     public List<ResponseCarRequest> getCars() {
@@ -55,7 +53,7 @@ public class CarController {
 
     }
 
-    @PostMapping(value = "create/car", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/cars", consumes = "application/json", produces = "application/json")
     public ResponseCarRequest createCar(@RequestBody @Valid CreateCarRequest carReq) {
         Car newCar = Car
                 .builder()
@@ -65,6 +63,7 @@ public class CarController {
                 .build();
         carService.save(newCar, carReq.getTeamId());
         ResponseCarRequest carRequest = new ResponseCarRequest();
+        carRequest.setId(newCar.getId());
         carRequest.setModel(newCar.getModel());
         carRequest.setColor1(newCar.getColor1());
         carRequest.setColor2(newCar.getColor2());
@@ -74,7 +73,7 @@ public class CarController {
     }
 
 
-    @PutMapping(value = "customers/{id}")
+    @PutMapping(value = "/cars/{id}")
     public ResponseCarRequest updateCar(@PathVariable(value = "id") Long id, @RequestBody CreateCarRequest carReq) {
         Car car = carService.update(carReq, id);
         ResponseCarRequest carRespReq = new ResponseCarRequest(
@@ -87,7 +86,7 @@ public class CarController {
         return carRespReq;
     }
 
-    @DeleteMapping(value = "/deleteCar/{id}")
+    @DeleteMapping(value = "/cars/{id}")
     public void deleteCar(Long id) {
         carService.deleteById(id);
     }

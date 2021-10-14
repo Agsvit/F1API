@@ -1,4 +1,4 @@
-package com.example.F1API.Request;
+package com.example.F1API.request.create;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
