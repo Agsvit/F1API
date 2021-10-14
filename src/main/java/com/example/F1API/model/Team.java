@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,9 +19,12 @@ import javax.validation.constraints.NotBlank;
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
     @NotBlank(message = "Name is mandatory")
-    String name;
+    private String name;
     @NotBlank(message = "Principal is mandatory")
-    String principal;
+    private String principal;
+
+    @OneToMany(mappedBy = "team")
+    private List<Driver> drivers;
 }

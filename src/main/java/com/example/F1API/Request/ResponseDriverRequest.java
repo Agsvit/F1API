@@ -2,18 +2,16 @@ package com.example.F1API.Request;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateDriverRequest {
+public class ResponseDriverRequest {
 
-    @NotBlank(message = "Name is mandatory")
+
     private String name;
-    @NotBlank(message = "Age should be between 1 and 99")
     private int age;
     private Long teamId;
+    private String teamName;
 }

@@ -19,14 +19,14 @@ import javax.validation.constraints.NotBlank;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    private Long id;
     @NotBlank(message = "Model is mandatory")
-    String model;
-    String color1;
-    String color2;
+    private String model;
+    private String color1;
+    private String color2;
 
     @OneToOne
     @JoinColumn(name = "id_team")
-    Team team;
+    private Team team;
 
 }

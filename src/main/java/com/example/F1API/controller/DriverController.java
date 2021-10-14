@@ -1,5 +1,7 @@
 package com.example.F1API.controller;
 
+import com.example.F1API.Request.CreateDriverRequest;
+import com.example.F1API.Request.ResponseDriverRequest;
 import com.example.F1API.model.Driver;
 import com.example.F1API.service.DriverService;
 
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,21 +22,41 @@ public class DriverController {
     @Autowired
     DriverService driverService;
 
-    @GetMapping("/getDrivers")
-    public List<Driver> getDrivers() {
-        return driverService.findAll();
+    @GetMapping("/drivers")
+    public List<ResponseDriverRequest> getDrivers() {
+
+        List<ResponseDriverRequest> responseDriverReq = new ArrayList<>();
+        List<Driver> drivers = driverService.findAll();
+        for (Driver driver : drivers) {
+            responseDriverReq.add(new ResponseDriverRequest(
+                    driver.getName(),
+                    driver.getAge(),
+                    driver.getTeam().getId(),
+                    driver.getTeam().getName()));
+        }
+        return responseDriverReq;
     }
 
     @GetMapping("/getDriversId")
     public Optional<Driver> getDriverId(Long driverId) {
+
         return driverService.findById(driverId);
     }
 
-    @PostMapping(value = "createDriver", consumes = "application/json", produces = "application/json")
-    public Driver createDriver(@RequestBody Driver driver) {
-        Driver newDriver = Driver.builder().name(driver.getName()).age(driver.getAge()).build();
-        driverService.save(newDriver);
-        return newDriver;
+    @PostMapping(value = "drivers", consumes = "application/json")
+    public ResponseDriverRequest createDriver(@RequestBody CreateDriverRequest driverReq) {
+        Driver newDriver = Driver
+                .builder()
+                .name(driverReq.getName())
+                .age(driverReq.getAge())
+                .build();
+        driverService.save(newDriver, driverReq.getTeamId());
+        ResponseDriverRequest driverRequest = new ResponseDriverRequest();
+        driverRequest.setName(newDriver.getName());
+        driverRequest.setAge(newDriver.getAge());
+        driverRequest.setTeamId(newDriver.getTeam().getId());
+        driverRequest.setTeamName(newDriver.getTeam().getName());
+        return driverRequest;
     }
 
     @PutMapping(value = "updateDriver/{id}", consumes = "application/json", produces = "application/json")

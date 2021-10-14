@@ -29,7 +29,8 @@ public class Driver {
     @ManyToOne
     @JoinColumn(name = "id_team")
     private Team team;
+
 //    @ManyToOne
-//    @JoinColumn(name = "id_car")
-//    private Car car;
+//    @JoinColumn(name = "id_race")
+//    private Race race;
 }
