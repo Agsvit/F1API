@@ -13,8 +13,8 @@ import java.util.Optional;
 @Service
 public class CarService {
 
-    final CarRepository carRepository;
-    final TeamRepository teamRepository;
+    private final CarRepository carRepository;
+    private final TeamRepository teamRepository;
 
     public CarService(CarRepository carRepository, TeamRepository teamRepository) {
         this.carRepository = carRepository;

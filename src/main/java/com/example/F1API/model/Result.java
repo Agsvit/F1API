@@ -19,15 +19,14 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotBlank(message = "Track is mandatory")
-    private String track;
-    private Date date;
+    @NotBlank(message = "Position is mandatory")
+    private int position;
 
     @ManyToOne
     @JoinColumn(name = "id_race")
     private Race race;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_driver")
     private Driver driver;
 

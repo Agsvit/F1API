@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,6 +30,9 @@ public class Driver {
     @ManyToOne
     @JoinColumn(name = "id_team")
     private Team team;
+
+    @OneToMany(mappedBy = "driver")
+    private Set<Result> results;
 
 //    @ManyToOne
 //    @JoinColumn(name = "id_race")

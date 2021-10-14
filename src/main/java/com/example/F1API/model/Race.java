@@ -26,4 +26,8 @@ public class Race {
     @OneToMany(mappedBy = "race")
     private Set<Result> results;
 
+    @OneToOne
+    @JoinColumn(name = "fastest_driver_id")
+    private Driver driver;
+
 }
