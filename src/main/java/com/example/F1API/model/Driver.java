@@ -34,7 +34,4 @@ public class Driver {
     @OneToMany(mappedBy = "driver")
     private Set<Result> results;
 
-//    @ManyToOne
-//    @JoinColumn(name = "id_race")
-//    private Race race;
 }
