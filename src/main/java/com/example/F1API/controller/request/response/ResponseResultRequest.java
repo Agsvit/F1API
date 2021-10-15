@@ -1,4 +1,4 @@
-package com.example.F1API.request.response;
+package com.example.F1API.controller.request.response;
 
 import lombok.*;
 
@@ -9,8 +9,8 @@ import lombok.*;
 @Builder
 public class ResponseResultRequest {
     private Long id;
-    private Long raceId;
-    private String raceTrack;
+//    private Long raceId;
+//    private String raceTrack;
     private Long driverId;
     private String driverName;
     private int position;

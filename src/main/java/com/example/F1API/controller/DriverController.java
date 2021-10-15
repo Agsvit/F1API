@@ -1,7 +1,7 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.request.create.CreateDriverRequest;
-import com.example.F1API.request.response.ResponseDriverRequest;
+import com.example.F1API.controller.request.create.CreateDriverRequest;
+import com.example.F1API.controller.request.response.ResponseDriverRequest;
 import com.example.F1API.model.Driver;
 import com.example.F1API.service.DriverService;
 import org.springframework.validation.annotation.Validated;

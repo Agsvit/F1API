@@ -1,4 +1,4 @@
-package com.example.F1API.request.create;
+package com.example.F1API.controller.request.create;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +11,11 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateCarRequest {
+public class CreateTeamRequest {
 
     @NotBlank(message = "Name is mandatory")
-    private String model;
-    @NotBlank(message = "Color1 is mandatory")
-    private String color1;
-    private String color2;
-    private Long teamId;
+    private String name;
+    @NotBlank(message = "Principal is mandatory")
+    private String principal;
+
 }

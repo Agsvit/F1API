@@ -1,7 +1,7 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.request.create.CreateTeamRequest;
-import com.example.F1API.request.response.ResponseTeamRequest;
+import com.example.F1API.controller.request.create.CreateTeamRequest;
+import com.example.F1API.controller.request.response.ResponseTeamRequest;
 import com.example.F1API.model.Team;
 import com.example.F1API.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,14 +1,15 @@
 package com.example.F1API.service;
 
-import com.example.F1API.request.create.CreateDriverRequest;
+import com.example.F1API.exception.DriverNotFound;
+import com.example.F1API.exception.TeamNotFound;
 import com.example.F1API.model.Driver;
 import com.example.F1API.model.Team;
 import com.example.F1API.repository.DriverRepository;
 import com.example.F1API.repository.TeamRepository;
+import com.example.F1API.controller.request.create.CreateDriverRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DriverService {
@@ -26,22 +27,16 @@ public class DriverService {
     }
 
     public Driver findById(Long driverId) {
-        Optional<Driver> driver = driverRepository.findById(driverId);
-        if (driver.isPresent()) {
-            return driver.get();
-        }
-        return null;
+        return driverRepository.findById(driverId).orElseThrow(DriverNotFound::new);
     }
 
     public Driver save(Driver newDriver, Long teamId) {
-        Optional<Team> team = teamRepository.findById(teamId);
-        if (team.isPresent()) {
-            newDriver.setTeam(team.get());
-            driverRepository.save(newDriver);
-            return newDriver;
-        }
-        return null;
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFound::new);
+        newDriver.setTeam(team);
+        driverRepository.save(newDriver);
+        return newDriver;
     }
+
 
     public <S extends Driver> S save(S newDriver) {
         return driverRepository.save(newDriver);
@@ -52,14 +47,9 @@ public class DriverService {
     }
 
     public Driver update(CreateDriverRequest driverReq, Long id) {
-        Optional<Driver> driverOptional = driverRepository.findById(id);
-        if (driverOptional.isPresent()) {
-            driverOptional.get().setName(driverReq.getName());
-            driverOptional.get().setAge(driverReq.getAge());
-
-            return driverRepository.save(driverOptional.get());
-        }
-        //Exception
-        return null;
+        Driver driver = this.findById(id);
+        driver.setName(driverReq.getName());
+        driver.setAge(driverReq.getAge());
+        return driverRepository.save(driver);
     }
 }

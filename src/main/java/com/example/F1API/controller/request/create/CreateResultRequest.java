@@ -1,4 +1,4 @@
-package com.example.F1API.request.create;
+package com.example.F1API.controller.request.create;
 
 import lombok.*;
 

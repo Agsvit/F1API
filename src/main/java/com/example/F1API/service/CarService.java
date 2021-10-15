@@ -1,6 +1,8 @@
 package com.example.F1API.service;
 
-import com.example.F1API.request.create.CreateCarRequest;
+import com.example.F1API.exception.CarNotFound;
+import com.example.F1API.exception.TeamNotFound;
+import com.example.F1API.controller.request.create.CreateCarRequest;
 import com.example.F1API.model.Car;
 import com.example.F1API.model.Team;
 import com.example.F1API.repository.CarRepository;
@@ -8,7 +10,6 @@ import com.example.F1API.repository.TeamRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CarService {
@@ -26,20 +27,13 @@ public class CarService {
     }
 
     public Car findById(Long carId) {
-        Optional<Car> car = carRepository.findById(carId);
-        if (car.isPresent()) {
-            return car.get();
-        }
-        return null;
+        return carRepository.findById(carId).orElseThrow(CarNotFound::new);
     }
 
     public Car save(Car newCar, Long teamId) {
-        Optional<Team> team = teamRepository.findById(teamId);
-        if (team.isPresent()) {
-            newCar.setTeam(team.get());
+        Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFound::new);
+        newCar.setTeam(team);
         return carRepository.save(newCar);
-    }
-        return null;
     }
 
     public void deleteById(Long id) {
@@ -47,15 +41,10 @@ public class CarService {
     }
 
     public Car update(CreateCarRequest carReq, Long id) {
-        Optional<Car> carOptional = carRepository.findById(id);
-        if (carOptional.isPresent()) {
-            carOptional.get().setModel(carReq.getModel());
-            carOptional.get().setColor1(carReq.getColor1());
-            carOptional.get().setColor2(carReq.getColor2());
-
-            return carRepository.save(carOptional.get());
-        }
-        //Exception
-        return null;
+        Car car = this.findById(id);
+        car.setModel(carReq.getModel());
+        car.setColor1(carReq.getColor1());
+        car.setColor2(carReq.getColor2());
+        return carRepository.save(car);
     }
 }

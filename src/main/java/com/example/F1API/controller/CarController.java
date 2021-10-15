@@ -1,7 +1,7 @@
 package com.example.F1API.controller;
 
-import com.example.F1API.request.create.CreateCarRequest;
-import com.example.F1API.request.response.ResponseCarRequest;
+import com.example.F1API.controller.request.create.CreateCarRequest;
+import com.example.F1API.controller.request.response.ResponseCarRequest;
 import com.example.F1API.model.Car;
 import com.example.F1API.service.CarService;
 import org.springframework.validation.annotation.Validated;

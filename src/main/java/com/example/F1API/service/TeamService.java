@@ -1,6 +1,6 @@
 package com.example.F1API.service;
 
-import com.example.F1API.request.create.CreateTeamRequest;
+import com.example.F1API.controller.request.create.CreateTeamRequest;
 import com.example.F1API.model.Team;
 import com.example.F1API.repository.TeamRepository;
 import org.springframework.stereotype.Service;

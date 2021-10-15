@@ -1,23 +1,20 @@
 package com.example.F1API.service;
 
+import com.example.F1API.controller.request.create.CreateRaceRequest;
+import com.example.F1API.exception.RaceNotFound;
 import com.example.F1API.model.Race;
 import com.example.F1API.repository.RaceRepository;
-import com.example.F1API.repository.ResultRepository;
-import com.example.F1API.request.create.CreateRaceRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RaceService {
 
     private final RaceRepository raceRepository;
-    private final ResultRepository resultRepository;
 
-    public RaceService(RaceRepository raceRepository, ResultRepository resultRepository) {
+    public RaceService(RaceRepository raceRepository) {
         this.raceRepository = raceRepository;
-        this.resultRepository = resultRepository;
     }
 
     public List<Race> findAll() {
@@ -33,12 +30,13 @@ public class RaceService {
     }
 
     public Race update(CreateRaceRequest raceReq, Long id) {
-        Optional<Race> raceOptional = raceRepository.findById(id);
-        if (raceOptional.isPresent()) {
-            raceOptional.get().setTrack(raceReq.getTrack());
-            raceOptional.get().setDate(raceReq.getDate());
-            return raceRepository.save(raceOptional.get());
-        }
-        return null;
+        Race race = this.findById(id);
+        race.setTrack(raceReq.getTrack());
+        race.setDate(raceReq.getDate());
+        return raceRepository.save(race);
+    }
+
+    public Race findById(Long raceId) {
+        return raceRepository.findById(raceId).orElseThrow(RaceNotFound::new);
     }
 }
