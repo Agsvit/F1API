@@ -26,10 +26,12 @@ public class DriverService {
         return driverRepository.findAll();
     }
 
+    //Looks for a driver by id and returns a Driver object or throws exceptions (instead of returning an Optional)
     public Driver findById(Long driverId) {
         return driverRepository.findById(driverId).orElseThrow(DriverNotFound::new);
     }
 
+    //Saves a new Driver and associates him to a team
     public Driver save(Driver newDriver, Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFound::new);
         newDriver.setTeam(team);
@@ -37,19 +39,21 @@ public class DriverService {
         return newDriver;
     }
 
-
-    public <S extends Driver> S save(S newDriver) {
-        return driverRepository.save(newDriver);
-    }
-
     public void deleteById(Long id) {
         driverRepository.deleteById(id);
     }
 
+    //Update driver attributes and team
     public Driver update(CreateDriverRequest driverReq, Long id) {
         Driver driver = this.findById(id);
+        Team team = teamRepository.findById(driverReq.getTeamId()).orElseThrow(TeamNotFound::new);
         driver.setName(driverReq.getName());
         driver.setAge(driverReq.getAge());
+        driver.setTeam(team);
         return driverRepository.save(driver);
+    }
+
+    public Driver findByName(String name) {
+        return driverRepository.findByName(name).orElseThrow(DriverNotFound::new);
     }
 }

@@ -25,6 +25,7 @@ public class Car {
     private String color1;
     private String color2;
 
+    //1:1 relation with team since this each team only have one car (model)
     @OneToOne
     @JoinColumn(name = "id_team")
     private Team team;

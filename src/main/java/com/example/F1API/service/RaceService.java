@@ -29,7 +29,9 @@ public class RaceService {
         raceRepository.deleteById(id);
     }
 
+    //Update to a race specified by id
     public Race update(CreateRaceRequest raceReq, Long id) {
+        //findbyid method of this service is used and race is already verified there
         Race race = this.findById(id);
         race.setTrack(raceReq.getTrack());
         race.setDate(raceReq.getDate());
@@ -38,5 +40,9 @@ public class RaceService {
 
     public Race findById(Long raceId) {
         return raceRepository.findById(raceId).orElseThrow(RaceNotFound::new);
+    }
+
+    public Race findByTrack(String raceTrack) {
+        return raceRepository.findByTrack(raceTrack).orElseThrow(RaceNotFound::new);
     }
 }

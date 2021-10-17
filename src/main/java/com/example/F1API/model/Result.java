@@ -20,8 +20,12 @@ public class Result {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotBlank(message = "Position is mandatory")
+    @Column(unique=true)
     private int position;
 
+
+    //This class is used as an intermediate table for the many to many relation of race and drivers
+    //allowing to define the position of each driver for each race
     @ManyToOne
     @JoinColumn(name = "id_race")
     private Race race;
@@ -29,5 +33,6 @@ public class Result {
     @ManyToOne
     @JoinColumn(name = "id_driver")
     private Driver driver;
+
 
 }

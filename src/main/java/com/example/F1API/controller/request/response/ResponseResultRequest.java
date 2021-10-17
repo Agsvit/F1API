@@ -9,8 +9,6 @@ import lombok.*;
 @Builder
 public class ResponseResultRequest {
     private Long id;
-//    private Long raceId;
-//    private String raceTrack;
     private Long driverId;
     private String driverName;
     private int position;

@@ -21,14 +21,16 @@ import java.util.List;
 @RequestMapping("/api")
 public class RaceController {
 
+
     private final RaceService raceService;
     private final ResultService resultService;
-
+    // Contructor injection
     public RaceController(RaceService raceService, ResultService resultService) {
         this.raceService = raceService;
         this.resultService = resultService;
     }
 
+    //Get List of the races with their atributes
     @GetMapping("/races")
     public List<ResponseRaceRequest> getRaces() {
         List<ResponseRaceRequest> createRaceReq = new ArrayList<>();
@@ -42,11 +44,13 @@ public class RaceController {
         return createRaceReq;
     }
 
-    @GetMapping("/race/{raceId}/results")
-    public ResponseRaceResultRequest getRaceResults(Long raceId) {
-        Race race = raceService.findById(raceId);
+    //Gets a list of the results for a specified race
+    @GetMapping("/race/{raceName}/results")
+    public ResponseRaceResultRequest getRaceResults(String raceTrack) {
+        Race race = raceService.findByTrack(raceTrack);
+        List<ResponseResultRequest> resultRequests = new ArrayList<>();
         ResponseRaceResultRequest responseRaceRequest = new ResponseRaceResultRequest(race.getId(), race.getTrack(), race.getDate()
-                , Collections.emptyList());
+                , resultRequests);
         for (Result result : race.getResults()) {
             ResponseResultRequest responseResultRequest = new ResponseResultRequest(
                     result.getId(),
@@ -58,21 +62,50 @@ public class RaceController {
         return responseRaceRequest;
     }
 
+    // Creates a race
     @PostMapping(value = "/races", consumes = "application/json", produces = "application/json")
-    public ResponseRaceResultRequest createRace(@RequestBody @Valid CreateRaceRequest raceReq) {
+    public ResponseRaceRequest createRace(@RequestBody @Valid CreateRaceRequest raceReq) {
         Race newRace = Race
                 .builder()
                 .track(raceReq.getTrack())
                 .date(raceReq.getDate())
                 .build();
         raceService.save(newRace);
-        ResponseRaceResultRequest raceRequest = new ResponseRaceResultRequest();
+        ResponseRaceRequest raceRequest = new ResponseRaceRequest();
         raceRequest.setId(newRace.getId());
         raceRequest.setTrack(newRace.getTrack());
         raceRequest.setDate(newRace.getDate());
         return raceRequest;
     }
 
+    // Create results associated to a specified race
+    @PostMapping(value = "/race/{track}/results")
+    public ResponseRaceResultRequest insertResultsOnRace(@RequestBody List<CreateResultRequest> resultReqs, String track) {
+        List<Result> results = new ArrayList<>();
+        List<Long> driversIds = new ArrayList<>();
+        for (CreateResultRequest resultReq : resultReqs) {
+            results.add(Result
+                    .builder()
+                    .position(resultReq.getPosition())
+                    .build());
+            driversIds.add(resultReq.getDriverId());
+        }
+        Race race = resultService.save(results, track, driversIds);
+        List<ResponseResultRequest> resultRequests = new ArrayList<>();
+        ResponseRaceResultRequest responseRaceRequest = new ResponseRaceResultRequest(race.getId(), race.getTrack(), race.getDate()
+                , resultRequests);
+        for (Result result : race.getResults()) {
+            ResponseResultRequest responseResultRequest = new ResponseResultRequest(
+                    result.getId(),
+                    result.getDriver().getId(),
+                    result.getDriver().getName(),
+                    result.getPosition());
+            responseRaceRequest.getResultResponses().add(responseResultRequest);
+        }
+        return responseRaceRequest;
+    }
+
+    //Update race atributtes
     @PutMapping(value = "/races/{id}")
     public ResponseRaceRequest updateRace(@PathVariable(value = "id") Long id, @RequestBody CreateRaceRequest raceReq) {
         Race race = raceService.update(raceReq, id);
@@ -83,6 +116,7 @@ public class RaceController {
         return raceRespReq;
     }
 
+    //Update to a result
     @PutMapping(value = "/results/{id}")
     public ResponseResultRequest updateResult(@PathVariable(value = "id") Long id, @RequestBody CreateResultRequest resultReq) {
         Result result = resultService.update(resultReq, id);
@@ -94,30 +128,6 @@ public class RaceController {
         return resultRespReq;
     }
 
-    @PostMapping(value = "/race/{id}/results")
-    public ResponseRaceResultRequest insertResultsOnRace(@RequestBody List<CreateResultRequest> resultReqs, Long id) {
-        List<Result> results = new ArrayList<>();
-        List<Long> driversIds = new ArrayList<>();
-        for (CreateResultRequest resultReq : resultReqs) {
-            results.add(Result
-                    .builder()
-                    .position(resultReq.getPosition())
-                    .build());
-            driversIds.add(resultReq.getDriverId());
-        }
-        Race race = resultService.save(results, id, driversIds);
-        ResponseRaceResultRequest responseRaceRequest = new ResponseRaceResultRequest(race.getId(), race.getTrack(), race.getDate()
-                , Collections.emptyList());
-        for (Result result : race.getResults()) {
-            ResponseResultRequest responseResultRequest = new ResponseResultRequest(
-                    result.getId(),
-                    result.getDriver().getId(),
-                    result.getDriver().getName(),
-                    result.getPosition());
-            responseRaceRequest.getResultResponses().add(responseResultRequest);
-        }
-        return responseRaceRequest;
-    }
 
     @DeleteMapping(value = "/races/{id}")
     public void deleteRace(Long id) {
@@ -128,6 +138,5 @@ public class RaceController {
     public void deleteResult(Long id) {
         resultService.deleteById(id);
     }
-
 
 }

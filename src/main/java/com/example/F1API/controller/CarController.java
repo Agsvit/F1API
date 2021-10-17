@@ -16,7 +16,7 @@ import java.util.List;
 @Validated
 public class CarController {
 
-   private final CarService carService;
+    private final CarService carService;
 
     public CarController(CarService carService) {
         this.carService = carService;
@@ -24,7 +24,6 @@ public class CarController {
 
     @GetMapping("/cars")
     public List<ResponseCarRequest> getCars() {
-
         List<ResponseCarRequest> responseCarReq = new ArrayList<>();
         List<Car> cars = carService.findAll();
         for (Car car : cars) {
@@ -40,7 +39,7 @@ public class CarController {
     }
 
     @GetMapping("/cars/{id}")
-    public ResponseCarRequest getCarId(Long carId) {
+    public ResponseCarRequest getCarById(Long carId) {
         Car car = carService.findById(carId);
         ResponseCarRequest carRequest = new ResponseCarRequest(
                 car.getId(),

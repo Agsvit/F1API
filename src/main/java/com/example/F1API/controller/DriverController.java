@@ -37,9 +37,9 @@ public class DriverController {
         return responseDriverReq;
     }
 
-    @GetMapping("/drivers/{id}")
-    public ResponseDriverRequest getDriverId(Long driverId) {
-        Driver driver = driverService.findById(driverId);
+    @GetMapping("/drivers/{name}")
+    public ResponseDriverRequest getDriverByName(String name) {
+        Driver driver = driverService.findByName(name);
         ResponseDriverRequest driverRequest = new ResponseDriverRequest(
                 driver.getId(),
                 driver.getName(),

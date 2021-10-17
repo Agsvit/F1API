@@ -24,9 +24,12 @@ public class Race {
     private String track;
     private Date date;
 
+    //Realation with intermidiate table results, ordering them by position
     @OneToMany(mappedBy = "race")
+    @OrderBy("position")
     private List<Result> results;
 
+    //One to one relation with drivers to define the driver that made the fastest lap in the race (not implemented yet)
     @OneToOne
     @JoinColumn(name = "fastest_driver_id")
     private Driver driver;

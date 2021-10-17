@@ -26,10 +26,12 @@ public class CarService {
         return carRepository.findAll();
     }
 
+    //Looks for a car by id and returns a Car object or throws exceptions (instead of returning an Optional)
     public Car findById(Long carId) {
         return carRepository.findById(carId).orElseThrow(CarNotFound::new);
     }
 
+    //Saves a car and associates it to a team
     public Car save(Car newCar, Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(TeamNotFound::new);
         newCar.setTeam(team);
@@ -40,11 +42,14 @@ public class CarService {
         carRepository.deleteById(id);
     }
 
+    //Updates car attributes and team associated with
     public Car update(CreateCarRequest carReq, Long id) {
         Car car = this.findById(id);
+        Team team = teamRepository.findById(carReq.getTeamId()).orElseThrow(TeamNotFound::new);
         car.setModel(carReq.getModel());
         car.setColor1(carReq.getColor1());
         car.setColor2(carReq.getColor2());
+        car.setTeam(team);
         return carRepository.save(car);
     }
 }

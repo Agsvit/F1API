@@ -21,7 +21,6 @@ public class TeamController {
 
     @GetMapping("/teams")
     public List<ResponseTeamRequest> getTeams() {
-
         List<ResponseTeamRequest> responseTeamReq = new ArrayList<>();
         List<Team> teams = teamService.findAll();
         for (Team team : teams) {
@@ -33,9 +32,10 @@ public class TeamController {
         return responseTeamReq;
     }
 
-    @GetMapping("/teams/{id}")
-    public ResponseTeamRequest getTeamId(Long teamId) {
-        Team team = teamService.findById(teamId);
+    //In the future this should list the team's drivers
+    @GetMapping("/teams/{name}")
+    public ResponseTeamRequest getTeamByName(String name) {
+        Team team = teamService.findByName(name);
         ResponseTeamRequest teamRequest = new ResponseTeamRequest(
                 team.getId(),
                 team.getName(),

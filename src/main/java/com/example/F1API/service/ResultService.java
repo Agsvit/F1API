@@ -2,7 +2,9 @@ package com.example.F1API.service;
 
 import com.example.F1API.controller.request.create.CreateResultRequest;
 import com.example.F1API.exception.DriverNotFound;
+import com.example.F1API.exception.DuplicatedResult;
 import com.example.F1API.exception.RaceNotFound;
+import com.example.F1API.exception.ResultNotFound;
 import com.example.F1API.model.Driver;
 import com.example.F1API.model.Race;
 import com.example.F1API.model.Result;
@@ -27,10 +29,24 @@ public class ResultService {
         this.driverRepository = driverRepository;
     }
 
-    public Race save(List<Result> newResults, Long raceId, List<Long> driversIds) {
-        Race race = raceRepository.findById(raceId).orElseThrow(RaceNotFound::new);
+    //Saves a race with a list of results associated to the race and multiple drivers
+    public Race save(List<Result> newResults, String raceTrack, List<Long> driversIds) {
+        Race race = raceRepository.findByTrack(raceTrack).orElseThrow(RaceNotFound::new);
+        //Goes through the new results to save them
         for (var i = 0; newResults.size() > i; i++) {
             Driver driver = driverRepository.findById(driversIds.get(i)).orElseThrow(DriverNotFound::new);
+            //Goes through the results of the specified race to compare them with each new results and ensure there is
+            //no duplicated results
+            //This verification works although it is creating an error in which the new results inserted do not
+            // appears on the response... working on that
+            /*for (Result result: race.getResults()) {
+                if (result.getPosition() == newResults.get(i).getPosition()) {
+                    throw new DuplicatedResult("Position already exists");
+                }
+                else if (result.getDriver() == driver) {
+                    throw new DuplicatedResult("Driver result already exists");
+                }
+            }*/
             newResults.get(i).setRace(race);
             newResults.get(i).setDriver(driver);
             resultRepository.save(newResults.get(i));
@@ -39,7 +55,7 @@ public class ResultService {
     }
 
     public Result findById(Long resultId) {
-        return resultRepository.findById(resultId).orElseThrow();
+        return resultRepository.findById(resultId).orElseThrow(ResultNotFound::new);
     }
 
     public void deleteById(Long id) {

@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ResultRepository extends JpaRepository<Result, Long> {
+    boolean existsByPosition(int position);
+
+    void findByPosition(int position);
 }

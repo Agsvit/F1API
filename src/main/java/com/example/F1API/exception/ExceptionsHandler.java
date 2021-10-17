@@ -47,4 +47,22 @@ public class ExceptionsHandler {
                 LocalDateTime.now()
         );
     }
+    @ExceptionHandler({DuplicatedResult.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public HttpErrorResponse handleGenericException(DuplicatedResult exception) {
+        return new HttpErrorResponse(
+                400,
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+    }
+    @ExceptionHandler({ResultNotFound.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public HttpErrorResponse handleGenericException(ResultNotFound exception) {
+        return new HttpErrorResponse(
+                404,
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+    }
 }

@@ -27,6 +27,7 @@ public class Driver {
     @Max(value = 99)
     private int age;
 
+    //Relation many to one with team, since each team is supposed to have 2 drivers
     @ManyToOne
     @JoinColumn(name = "id_team")
     private Team team;
