@@ -56,4 +56,8 @@ public class DriverService {
     public Driver findByName(String name) {
         return driverRepository.findByName(name).orElseThrow(DriverNotFound::new);
     }
+
+    public Driver findByNameContaining(String name) {
+        return driverRepository.findByNameContaining(name).orElseThrow(DriverNotFound::new);
+    }
 }

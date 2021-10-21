@@ -82,15 +82,15 @@ public class RaceController {
     @PostMapping(value = "/race/{track}/results")
     public ResponseRaceResultRequest insertResultsOnRace(@RequestBody List<CreateResultRequest> resultReqs, String track) {
         List<Result> results = new ArrayList<>();
-        List<Long> driversIds = new ArrayList<>();
+        List<String> driversNames = new ArrayList<>();
         for (CreateResultRequest resultReq : resultReqs) {
             results.add(Result
                     .builder()
                     .position(resultReq.getPosition())
                     .build());
-            driversIds.add(resultReq.getDriverId());
+            driversNames.add(resultReq.getDriverName());
         }
-        Race race = resultService.save(results, track, driversIds);
+        Race race = resultService.save(results, track, driversNames);
         List<ResponseResultRequest> resultRequests = new ArrayList<>();
         ResponseRaceResultRequest responseRaceRequest = new ResponseRaceResultRequest(race.getId(), race.getTrack(), race.getDate()
                 , resultRequests);
@@ -109,23 +109,21 @@ public class RaceController {
     @PutMapping(value = "/races/{id}")
     public ResponseRaceRequest updateRace(@PathVariable(value = "id") Long id, @RequestBody CreateRaceRequest raceReq) {
         Race race = raceService.update(raceReq, id);
-        ResponseRaceRequest raceRespReq = new ResponseRaceRequest(
+        return new ResponseRaceRequest(
                 race.getId(),
                 race.getTrack(),
                 race.getDate());
-        return raceRespReq;
     }
 
     //Update to a result
     @PutMapping(value = "/results/{id}")
     public ResponseResultRequest updateResult(@PathVariable(value = "id") Long id, @RequestBody CreateResultRequest resultReq) {
         Result result = resultService.update(resultReq, id);
-        ResponseResultRequest resultRespReq = new ResponseResultRequest(
+        return new ResponseResultRequest(
                 result.getId(),
                 result.getDriver().getId(),
                 result.getDriver().getName(),
                 result.getPosition());
-        return resultRespReq;
     }
 
 

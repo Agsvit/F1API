@@ -39,15 +39,14 @@ public class DriverController {
 
     @GetMapping("/drivers/{name}")
     public ResponseDriverRequest getDriverByName(String name) {
-        Driver driver = driverService.findByName(name);
-        ResponseDriverRequest driverRequest = new ResponseDriverRequest(
+        Driver driver = driverService.findByNameContaining(name);
+
+        return new ResponseDriverRequest(
                 driver.getId(),
                 driver.getName(),
                 driver.getAge(),
                 driver.getTeam().getId(),
                 driver.getTeam().getName());
-
-        return driverRequest;
     }
 
     @PostMapping(value = "/drivers", consumes = "application/json")
@@ -70,13 +69,12 @@ public class DriverController {
     @PutMapping(value = "/drivers/{id}")
     public ResponseDriverRequest updateDriver(@PathVariable(value = "id") Long id, @RequestBody CreateDriverRequest driverReq) {
         Driver driver = driverService.update(driverReq, id);
-        ResponseDriverRequest driverRespReq = new ResponseDriverRequest(
+        return new ResponseDriverRequest(
                 driver.getId(),
                 driver.getName(),
                 driver.getAge(),
                 driver.getTeam().getId(),
                 driver.getTeam().getName());
-        return driverRespReq;
     }
 
     @DeleteMapping(value = "/drivers/{id}")

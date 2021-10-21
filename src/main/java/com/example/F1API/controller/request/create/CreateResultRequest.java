@@ -10,7 +10,7 @@ import lombok.*;
 public class CreateResultRequest {
 
 //    private Long raceId;
-    private Long driverId;
+    private String driverName;
     private int position;
 
 }

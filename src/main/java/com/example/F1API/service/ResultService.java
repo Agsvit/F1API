@@ -30,28 +30,29 @@ public class ResultService {
     }
 
     //Saves a race with a list of results associated to the race and multiple drivers
-    public Race save(List<Result> newResults, String raceTrack, List<Long> driversIds) {
-        Race race = raceRepository.findByTrack(raceTrack).orElseThrow(RaceNotFound::new);
+    public Race save(List<Result> newResults, String raceTrack, List<String> driversNames) {
+        Race raceA = raceRepository.findByTrack(raceTrack).orElseThrow(RaceNotFound::new);
+        List<Result> results = raceA.getResults();
         //Goes through the new results to save them
         for (var i = 0; newResults.size() > i; i++) {
-            Driver driver = driverRepository.findById(driversIds.get(i)).orElseThrow(DriverNotFound::new);
+            Driver driver = driverRepository.findByNameContaining(driversNames.get(i)).orElseThrow(DriverNotFound::new);
             //Goes through the results of the specified race to compare them with each new results and ensure there is
             //no duplicated results
             //This verification works although it is creating an error in which the new results inserted do not
-            // appears on the response... working on that
-            /*for (Result result: race.getResults()) {
+            // appear on the response... working on that
+            for (Result result: results) {
                 if (result.getPosition() == newResults.get(i).getPosition()) {
                     throw new DuplicatedResult("Position already exists");
                 }
                 else if (result.getDriver() == driver) {
                     throw new DuplicatedResult("Driver result already exists");
                 }
-            }*/
-            newResults.get(i).setRace(race);
+            }
+            newResults.get(i).setRace(raceA);
             newResults.get(i).setDriver(driver);
             resultRepository.save(newResults.get(i));
         }
-        return race;
+        return raceA;
     }
 
     public Result findById(Long resultId) {
@@ -64,7 +65,7 @@ public class ResultService {
 
     public Result update(CreateResultRequest resultReq, Long id) {
         Result result = this.findById(id);
-        Driver driver = driverRepository.findById(resultReq.getDriverId()).orElseThrow(DriverNotFound::new);
+        Driver driver = driverRepository.findByName(resultReq.getDriverName()).orElseThrow(DriverNotFound::new);
         result.setDriver(driver);
         result.setPosition(resultReq.getPosition());
     return resultRepository.save(result);
